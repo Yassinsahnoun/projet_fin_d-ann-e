@@ -4,6 +4,7 @@ services:
   sonarqube:
     image: sonarqube:latest
     container_name: sonar
+    mem_limit: 1200m
     depends_on:
       - sonar-database
     environment:

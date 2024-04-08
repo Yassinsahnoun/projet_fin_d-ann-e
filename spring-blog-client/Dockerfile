@@ -3,9 +3,6 @@ FROM node:18.13 AS builder
 WORKDIR /app
 
 COPY package*.json /app
-
-#RUN npm install -g npm@10.5.0
-#RUN npm install -g npm
 RUN npm install -g @angular/cli@17.1.1
 
 RUN npm config set fetch-retry-mintimeout 20000

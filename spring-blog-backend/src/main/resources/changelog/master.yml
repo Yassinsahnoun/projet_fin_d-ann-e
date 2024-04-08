@@ -1,3 +1,6 @@
 databaseChangeLog:
   - include:
       file: classpath:/changelog/change_v1.sql
+      file: classpath:/changelog/change_v2.sql
+      file: classpath:/changelog/change_v4.sql
+

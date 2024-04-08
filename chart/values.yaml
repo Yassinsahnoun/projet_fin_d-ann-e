@@ -1,0 +1,50 @@
+
+namespace: default
+
+
+############### mysql-deploy ####################
+mysql:
+   label: mysql-deploy
+   container:
+      name: mysql
+      image: mysql:5.7
+      ports:
+         containerPort: 3306
+      registry:
+        name: yassin 
+   service: 
+      name: mysql-service
+      type: ClusterIP
+
+
+
+############## backend-deploy ################
+backend:
+   label: backend-deploy
+   container:
+      name: backend
+      image: yassin.azurecr.io/backend:latest
+      ports:
+         containerPort: 8080
+      registry:
+        name: yassin 
+   service: 
+      name: backend-service
+      type: ClusterIP
+
+
+
+############# front-deploy ###################
+frontend:
+   label: front-deploy
+   container:
+      name: frontend
+      image: yassin.azurecr.io/frontend:1.2
+      ports:
+         containerPort: 80
+      registry:
+        name: yassin 
+   service: 
+      name: mysql-service
+      type: ClusterIP
+
