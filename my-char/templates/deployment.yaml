@@ -1,0 +1,125 @@
+##################### mysql deployment ##################
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "label-app" . | nindent 4 }}
+  name: {{ include "label-name" . }}
+  namespace: {{ .Values.namespace}}
+spec:
+  replicas:  {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "label-name" . }}
+  template:
+    metadata: 
+      creationTimestamp: null
+      labels:
+        app: {{ include "label-name" . }}
+    spec:
+      containers:
+      - image: "{{ .Values.mysql.container.image }}:{{ .Values.mysql.container.tag }}"
+        name: 
+          "{{ .Values.mysql.container.name }}"
+        env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: ubuntu
+            - name: MYSQL_DATABASE
+              value: springblog
+            - name: MYSQL_USER
+              value: ubuntu
+            - name: MYSQL_PASSWORD
+              value: ubuntu        
+        imagePullPolicy: "IfNotPresent"
+        ports:
+            - containerPort: {{ .Values.mysql.container.ports.containerPort }}
+      imagePullSecrets:
+        - name: "{{ .Values.registry }}"
+
+
+
+
+####################### backend deployment ###########################
+
+---
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{ .Values.backend.label }}
+  name: {{ .Values.backend.label }}         
+  namespace: {{ .Values.namespace }}
+
+spec:
+
+  replicas:  {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: "{{ .Values.backend.label }}"
+
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: "{{ .Values.backend.label }}" 
+
+    spec:
+
+      containers:
+
+        - image: "{{ .Values.backend.container.image }}"
+          name: "{{ .Values.backend.container.name }}"
+          env: 
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://{{ .Values.mysql.service.name }}:3306/springblog?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+            - name: SPRING_DATASOURCE_USERNAME
+              value: ubuntu
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: ubuntu
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.backend.container.ports.containerPort }}
+      
+      imagePullSecrets:
+        - name: "{{ .Values.registry }}"
+
+
+
+---
+######################## frontend deployment #################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{ .Values.frontend.label}}
+  name: {{ .Values.frontend.label}}
+  namespace: {{ .Values.namespace}}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.frontend.label}}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{ .Values.frontend.label}}
+    spec:
+      containers:
+        - image: "{{ .Values.frontend.container.image }}"
+          name: "{{ .Values.frontend.container.name }}"
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: {{ .Values.frontend.container.ports.containerPort }}
+          env:
+            - name: BACKEND_URL
+              value: "http://backend-service:{{.Values.backend.container.ports.containerPort}}"
+
+      imagePullSecrets:
+        - name: "{{ .Values.registry }}"

@@ -1,0 +1,48 @@
+########### mysql service ############
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.mysql.service.name }}
+  namespace: {{ .Values.namespace}}
+spec:
+  selector:
+    app: {{ .Values.label }}
+  type: {{ .Values.service.type }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.mysql.container.ports.containerPort }}
+
+
+---
+############### backend service #################
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.backend.service.name }}
+  namespace: {{ .Values.namespace}}
+spec:
+  ports:
+    - protocol: "TCP"
+      port: {{ .Values.backend.container.ports.containerPort }}        # service port
+      targetPort: {{ .Values.backend.container.ports.containerPort }}  # port of the pod
+  type: {{ .Values.backend.service.type }}        # Type of service
+  selector:
+    app: {{ .Values.backend.label }}     #### to be match with the right deployment
+
+
+---
+############### frontend service ###############
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.frontend.service.name }}
+  namespace: {{ .Values.namespace}}
+spec:
+  selector:
+    app: {{ .Values.frontend.label }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.frontend.container.ports.containerPort }}  # service port
+      targetPort: {{ .Values.frontend.container.ports.containerPort }}  # port of the pod 
+  type: {{ .Values.frontend.service.type }}  # Type of service
+
