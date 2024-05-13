@@ -1,1 +1,2 @@
-db-data/mysql.sock
+/monitoring/prometheus/db-data
+/db-data

@@ -1,0 +1,16 @@
+- name: Push Docker image to Azure Container Registry
+  hosts: localhost
+  tasks:
+    - name: Login docker registry
+      docker_login:
+        registry: "myacr24762.azurecr.io"
+        username: "{{ lookup('env', 'username_acr') }}"
+        password: "{{ lookup('env', 'password') }}"
+        email: "sahnounyessine24@gmail.com"
+       
+    - name: Docker Build and Push
+      docker_image:
+        source: local
+        name: "myacr24762.azurecr.io/node:18-alpine3.19"
+        push: yes
+       

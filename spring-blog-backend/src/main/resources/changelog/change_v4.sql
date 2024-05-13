@@ -1,2 +1,0 @@
-ALTER TABLE customer
-ADD name2 VARCHAR(50);
