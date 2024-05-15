@@ -5,9 +5,8 @@ WORKDIR /app
 COPY package*.json /app
 RUN npm install -g @angular/cli@17.1.1
 
-RUN npm config set fetch-retry-mintimeout 20000
-RUN npm config set fetch-retry-maxtimeout 120000
-RUN npm install --legacy-peer-deps
+
+RUN npm install 
 
 COPY . /app/
 
